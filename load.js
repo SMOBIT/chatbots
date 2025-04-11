@@ -1,7 +1,21 @@
 (async () => {
-  const params = new URLSearchParams(window.location.search);
-  const clientParam = params.get("client");
-  const client = clientParam && clientParam.trim() !== "" ? clientParam : null;
+  let client = null;
+
+  try {
+    // 1. Versuche client aus window.location.search
+    const params = new URLSearchParams(window.location.search);
+    const fromURL = params.get("client");
+
+    // 2. Versuche client aus dem aktuellen Skript-Tag
+    const currentScript = document.currentScript;
+    const src = currentScript ? new URL(currentScript.src) : null;
+    const fromSrc = src ? new URLSearchParams(src.search).get("client") : null;
+
+    // 3. Nutze, was du bekommst – oder fallback
+    client = fromURL || fromSrc || null;
+  } catch (e) {
+    console.error("Fehler beim Ermitteln des client-Parameters:", e);
+  }
 
   if (!client) {
     console.error("❌ Kein 'client' Parameter angegeben.");
@@ -11,7 +25,6 @@
   const configUrl = `https://smobit.github.io/chatbots/config/${client}.json`;
   const styleUrl = `https://smobit.github.io/chatbots/styles/${client}.css`;
 
-  // CSS laden
   const style = document.createElement("link");
   style.rel = "stylesheet";
   style.href = styleUrl;
