@@ -1,0 +1,10 @@
+:root {
+  --n8n-chat-primary-color: #D85F27;
+  --n8n-chat-secondary-color: #4C4B4B;
+  --n8n-chat-font-family: 'Inter', sans-serif;
+  --n8n-chat-font-color: #4C4B4B;
+  --n8n-chat-border-radius: 16px;
+  --n8n-chat-message-user-bg: #f3f3f3;
+  --n8n-chat-message-bot-bg: #D85F27;
+  --n8n-chat-message-bot-color: #fff;
+}
