@@ -11,23 +11,26 @@
   style.href = styleUrl;
   document.head.appendChild(style);
 
-  // Konfiguration holen
+  // Konfiguration laden
   const config = await fetch(configUrl).then(res => res.json());
 
-  // Chat initialisieren
-  const script = document.createElement("script");
-  script.type = "module";
-  script.innerHTML = `
-    import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
-    createChat({
-      webhookUrl: '${config.webhookUrl}',
-      introMessage: '${config.introMessage}',
-      quickReplies: ${JSON.stringify(config.quickReplies)},
-      theme: {
-        title: '${config.title}',
-        position: 'bottom-right'
-      }
-    });
-  `;
-  document.body.appendChild(script);
+  // Chat-Script (IIFE) einbinden
+  const chatScript = document.createElement("script");
+  chatScript.src = "https://cdn.jsdelivr.net/npm/@n8n/chat@latest/dist/chat.iife.js";
+  chatScript.onload = () => {
+    if (window.createChat) {
+      window.createChat({
+        webhookUrl: config.webhookUrl,
+        introMessage: config.introMessage,
+        quickReplies: config.quickReplies,
+        theme: {
+          title: config.title,
+          position: "bottom-right"
+        }
+      });
+    } else {
+      console.error("createChat not available.");
+    }
+  };
+  document.body.appendChild(chatScript);
 })();
