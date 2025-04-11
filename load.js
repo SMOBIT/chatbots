@@ -11,26 +11,22 @@
   style.href = styleUrl;
   document.head.appendChild(style);
 
-  // Konfiguration laden
+  // Konfiguration holen
   const config = await fetch(configUrl).then(res => res.json());
 
-  // Chat-Script (IIFE) einbinden
-  const chatScript = document.createElement("script");
-  chatScript.src = "https://cdn.jsdelivr.net/npm/@n8n/chat@latest/dist/chat.iife.js";
-  chatScript.onload = () => {
-    if (window.createChat) {
-      window.createChat({
-        webhookUrl: config.webhookUrl,
-        introMessage: config.introMessage,
-        quickReplies: config.quickReplies,
-        theme: {
-          title: config.title,
-          position: "bottom-right"
-        }
-      });
-    } else {
-      console.error("createChat not available.");
-    }
+  // Chat-Script einfügen (IIFE-Version)
+  const script = document.createElement("script");
+  script.src = "https://cdn.jsdelivr.net/npm/@n8n/chat@latest/dist/chat.iife.js";
+  script.onload = () => {
+    window.createChat({
+      webhookUrl: config.webhookUrl,
+      introMessage: config.introMessage,
+      quickReplies: config.quickReplies,
+      theme: {
+        title: config.title,
+        position: "bottom-right"
+      }
+    });
   };
-  document.body.appendChild(chatScript);
+  document.body.appendChild(script);
 })();
