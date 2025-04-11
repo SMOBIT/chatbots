@@ -2,19 +2,12 @@
   let client = null;
 
   try {
-    // 1. Versuche client aus window.location.search
-    const params = new URLSearchParams(window.location.search);
-    const fromURL = params.get("client");
-
-    // 2. Versuche client aus dem aktuellen Skript-Tag
-    const currentScript = document.currentScript;
-    const src = currentScript ? new URL(currentScript.src) : null;
-    const fromSrc = src ? new URLSearchParams(src.search).get("client") : null;
-
-    // 3. Nutze, was du bekommst – oder fallback
-    client = fromURL || fromSrc || null;
-  } catch (e) {
-    console.error("Fehler beim Ermitteln des client-Parameters:", e);
+    // 1. Versuche client aus dem Script-SRC auszulesen
+    const currentScript = document.currentScript || [...document.getElementsByTagName("script")].pop();
+    const scriptURL = new URL(currentScript.src);
+    client = scriptURL.searchParams.get("client");
+  } catch (err) {
+    console.error("Fehler beim Ermitteln des client-Parameters:", err);
   }
 
   if (!client) {
